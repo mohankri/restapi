@@ -1,7 +1,7 @@
 var http = require("http");
-var querystring = require('querystring');
+//var querystring = require('querystring');
 
-var data = '{"tagId": "3505245", "fetchType": "details"}';
+//var data = '{"tagId": "3505245", "fetchType": "details"}';
 
 
 var options = {
@@ -12,7 +12,7 @@ var options = {
   "headers": {
     //"content-type": "application/x-www-form-urlencoded",
     "content-type": "application/json",
-    "Content-Length": Buffer.byteLength(data),
+    //"Content-Length": Buffer.byteLength(data),
     "authorization": "Basic a3Jpc2huYTprcmlzaG5hMTE=",
     "cache-control": "no-cache",
     "postman-token": "e80fe97f-ecaa-f410-9cb2-b642bc8185aa"
@@ -29,10 +29,21 @@ var req = http.request(options, function (res) {
   });
 
   res.on("end", function () {
-    var body = Buffer.concat(chunks);
-    console.log(body.toString());
+	var body = JSON.parse(chunks);
+	body = JSON.parse(body.message);
+	console.log("TagId " + body.tagId);
+	console.log("TagId " + body["tagId"]);
+	//console.log(JSON.stringify(body));
   });
 });
-console.log("Data Post " + data);
-req.write(data);
+
+var object = {}
+
+var orderNumber = 3505245;
+//var data =  "{" + \"tagId\" + ":" + "\"" orderNumber + "\"" + "," + \"fetchType\" + ":" + \"details\" + "}";
+object['tagId'] = orderNumber;
+object['fetchType'] = "details";
+
+console.log("Data Post " + JSON.stringify(object));
+req.write(JSON.stringify(object));
 req.end();
